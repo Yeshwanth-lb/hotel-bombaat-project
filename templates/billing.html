@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container page-section" style="padding-top: 3rem;">
+    <!-- Page Header -->
+    <div style="text-align: center; margin-bottom: 3rem;">
+        <h2 style="font-size: 3rem; margin-bottom: 1rem;">
+            Billing & <span style="background: linear-gradient(135deg, #10b981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Payment</span>
+        </h2>
+        <p style="font-size: 1.2rem; color: #475569;">
+            Review your charges and complete your payment securely
+        </p>
+    </div>
+
+    {% if grand_total == 0 %}
+        <!-- No Pending Payments -->
+        <div style="text-align: center; padding: 5rem 2rem; background: white; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <i class="fa-solid fa-circle-check" style="font-size: 5rem; color: #10b981; margin-bottom: 1.5rem;"></i>
+            <h3 style="color: #1e293b; margin-bottom: 1rem; font-size: 2rem;">All Paid Up! 🎉</h3>
+            <p style="color: #64748b; font-size: 1.15rem; max-width: 500px; margin: 0 auto 2rem;">
+                You have no pending payments at the moment.
+            </p>
+            <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary btn-lg">
+                <i class="fa-solid fa-gauge"></i> Go to Dashboard
+            </a>
+        </div>
+    {% else %}
+        <div class="billing-layout">
+            <!-- Left Column: Bill Summary -->
+            <div class="billing-summary">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                    <i class="fa-solid fa-receipt" style="font-size: 2.5rem; color: #6366f1;"></i>
+                    <h3 style="margin: 0; font-size: 1.75rem; color: #1e293b;">Payment Summary</h3>
+                </div>
+                
+                {% if bookings %}
+                <div style="margin-bottom: 2.5rem;">
+                    <h4 style="display: flex; align-items: center; gap: 0.75rem; color: #1e293b; margin-bottom: 1.25rem;">
+                        <i class="fa-solid fa-bed" style="color: #6366f1;"></i>
+                        Unpaid Room Bookings
+                    </h4>
+                    <ul class="billing-list">
+                        {% for b in bookings %}
+                        <li style="padding: 1.25rem 0; border-bottom: 2px solid #e2e8f0;">
+                            <div style="margin-bottom: 0.5rem;">
+                                <strong style="color: #1e293b; font-size: 1.05rem;">{{ b.room_type }}</strong>
+                                <div style="font-size: 0.9rem; color: #64748b; margin-top: 0.25rem;">
+                                    <i class="fa-solid fa-calendar"></i> {{ b.check_in }} to {{ b.check_out }}
+                                </div>
+                            </div>
+                            <span class="billing-price" style="font-size: 1.25rem; color: #6366f1;">₹{{ "%.2f"|format(b.total_cost) }}</span>
+                        </li>
+                        {% endfor %}
+                        <li class="billing-subtotal" style="background: #f8fafc; margin: 0 -2rem; padding: 1rem 2rem; border-radius: 8px;">
+                            <strong style="color: #1e293b;">Booking Subtotal:</strong>
+                            <strong style="color: #6366f1; font-size: 1.35rem;">₹{{ "%.2f"|format(total_booking_cost) }}</strong>
+                        </li>
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if food_orders %}
+                <div>
+                    <h4 style="display: flex; align-items: center; gap: 0.75rem; color: #1e293b; margin-bottom: 1.25rem;">
+                        <i class="fa-solid fa-utensils" style="color: #f59e0b;"></i>
+                        Unpaid Food Orders
+                    </h4>
+                    <ul class="billing-list">
+                        {% for f in food_orders %}
+                        <li style="padding: 1.25rem 0; border-bottom: 2px solid #e2e8f0;">
+                            <div style="margin-bottom: 0.5rem;">
+                                <strong style="color: #1e293b; font-size: 1.05rem;">Food Order #{{ f.order_id[:8] }}</strong>
+                                <div style="font-size: 0.9rem; color: #64748b; margin-top: 0.25rem;">
+                                    <i class="fa-solid fa-list"></i> {{ f['items']|length }} items - Room {{ f.room_number }}
+                                </div>
+                            </div>
+                            <span class="billing-price" style="font-size: 1.25rem; color: #f59e0b;">₹{{ "%.2f"|format(f.total_cost) }}</span>
+                        </li>
+                        {% endfor %}
+                        <li class="billing-subtotal" style="background: #fef3c7; margin: 0 -2rem; padding: 1rem 2rem; border-radius: 8px;">
+                            <strong style="color: #92400e;">Food Subtotal:</strong>
+                            <strong style="color: #f59e0b; font-size: 1.35rem;">₹{{ "%.2f"|format(total_food_cost) }}</strong>
+                        </li>
+                    </ul>
+                </div>
+                {% endif %}
+
+                <hr style="margin: 2rem 0; border: none; border-top: 2px dashed #cbd5e1;">
+                
+                <!-- Promo Code Section -->
+                <div class="promo-section">
+                    <label for="promo-code" style="font-weight: 700; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; color: #1e293b; font-size: 1.05rem;">
+                        <i class="fa-solid fa-tag" style="color: #10b981;"></i>
+                        Have a Promo Code? <span style="color: #64748b; font-weight: 400; font-size: 0.9rem;">(ರಿಯಾಯಿತಿ ಇದೆಯೇ?)</span>
+                    </label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="promo-code" placeholder="Enter promo code" 
+                               style="flex-grow: 1; padding: 1rem; border-radius: 8px; border: 2px solid #e2e8f0; font-size: 1rem; text-transform: uppercase; font-weight: 600;">
+                        <button type="button" id="apply-promo-btn" class="btn btn-secondary" style="padding: 1rem 2rem; white-space: nowrap;">
+                            Apply
+                        </button>
+                    </div>
+                    <p id="promo-message" style="font-size: 0.95rem; margin-top: 0.75rem; min-height: 1.5rem;"></p>
+                    <div style="margin-top: 1rem; padding: 1rem; background: #dbeafe; border-radius: 8px; border-left: 3px solid #3b82f6;">
+                        <p style="margin: 0; font-size: 0.9rem; color: #1e40af;">
+                            <strong>💡 Available Codes:</strong> SAKKATH (10%), BOMBAAT (20%), WELCOME (5%)
+                        </p>
+                    </div>
+                </div>
+
+                <hr style="margin: 2rem 0; border: none; border-top: 3px solid #6366f1;">
+                
+                <!-- Grand Total -->
+                <div class="billing-grand-total" style="padding: 1.5rem; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; margin: 0 -2rem; padding-left: 2rem; padding-right: 2rem;">
+                    <h3 style="margin: 0; font-size: 1.5rem; color: #1e293b;">Grand Total:</h3>
+                    <div>
+                        <h4 id="original-total" style="display:none; text-decoration: line-through; color: #94a3b8; text-align: right; margin: 0 0 0.5rem 0; font-size: 1.15rem;"></h4>
+                        <h3 id="display-total" style="margin: 0; font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                            ₹{{ "%.2f"|format(grand_total) }}
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Payment Form -->
+            <div class="card-form payment-form">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <i class="fa-solid fa-shield-halved" style="font-size: 3rem; color: #10b981;"></i>
+                    <h3 style="margin-top: 1rem; font-size: 1.75rem; color: #1e293b;">Secure Payment</h3>
+                    <p style="color: #64748b; margin: 0.5rem 0 0 0;">Your transaction is protected</p>
+                </div>
+
+                <button id="show-pay-modal" class="btn btn-primary btn-lg" style="width: 100%; padding: 1.5rem; font-size: 1.25rem; background: linear-gradient(135deg, #10b981, #059669);">
+                    <i class="fa-solid fa-lock"></i> 
+                    Pay <span id="btn-total">₹{{ "%.2f"|format(grand_total) }}</span>
+                </button>
+
+                <div style="display: flex; align-items: center; gap: 1rem; margin-top: 2rem; padding: 1.5rem; background: #f8fafc; border-radius: 8px;">
+                    <i class="fa-solid fa-check-circle" style="color: #10b981; font-size: 1.5rem;"></i>
+                    <div style="flex-grow: 1;">
+                        <div style="font-weight: 600; color: #1e293b; margin-bottom: 0.25rem;">100% Secure Payment</div>
+                        <div style="font-size: 0.85rem; color: #64748b;">Protected by 256-bit SSL encryption</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem; text-align: center;">
+                    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1rem;">We accept</p>
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <div style="padding: 0.5rem 1rem; background: white; border: 2px solid #e2e8f0; border-radius: 6px; font-weight: 600; color: #6366f1;">
+                            <i class="fa-solid fa-credit-card"></i> Cards
+                        </div>
+                        <div style="padding: 0.5rem 1rem; background: white; border: 2px solid #e2e8f0; border-radius: 6px; font-weight: 600; color: #10b981;">
+                            <i class="fa-brands fa-cc-visa"></i> UPI
+                        </div>
+                        <div style="padding: 0.5rem 1rem; background: white; border: 2px solid #e2e8f0; border-radius: 6px; font-weight: 600; color: #f59e0b;">
+                            <i class="fa-solid fa-wallet"></i> Wallet
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Payment Modal -->
+<div id="payment-modal-overlay" class="modal-overlay">
+    <div class="modal-content card-form" style="max-width: 550px;">
+        <span class="modal-close" id="modal-close-btn">&times;</span>
+        
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <i class="fa-solid fa-credit-card" style="font-size: 3rem; background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
+            <h3 style="margin-top: 1rem; font-size: 1.75rem;">Complete Payment</h3>
+            <p style="color: #64748b;">Total: <strong id="modal-total" style="color: #6366f1; font-size: 1.5rem;">₹{{ "%.2f"|format(grand_total) }}</strong></p>
+        </div>
+        
+        <form id="payment-form" method="POST" action="{{ url_for('payment.process_payment') }}">
+            <input type="hidden" name="payment_method" id="final_payment_method" value="Card">
+            <input type="hidden" name="promo_code" id="hidden_promo_code" value="">
+
+            <div class="form-group">
+                <label for="payment_method_select">
+                    <i class="fa-solid fa-wallet"></i> Payment Method
+                </label>
+                <select id="payment_method_select" required style="font-size: 1rem; padding: 1rem;">
+                    <option value="Card" selected>💳 Credit/Debit Card</option>
+                    <option value="UPI">📱 UPI</option>
+                    <option value="Net Banking">🏦 Net Banking</option>
+                    <option value="Wallet">👛 Digital Wallet</option>
+                </select>
+            </div>
+            
+            <!-- Card Details -->
+            <div id="card-details" class="payment-details-group">
+                <div class="form-group">
+                    <label>Card Number</label>
+                    <input type="text" placeholder="1234 5678 9012 3456" maxlength="19">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Expiry</label>
+                        <input type="text" placeholder="MM / YY" maxlength="7">
+                    </div>
+                    <div class="form-group">
+                        <label>CVV</label>
+                        <input type="text" placeholder="123" maxlength="3">
+                    </div>
+                </div>
+            </div>
+
+            <!-- UPI Details -->
+            <div id="upi-details" class="payment-details-group" style="display: none;">
+                <div class="form-group">
+                    <label>UPI ID</label>
+                    <input type="text" placeholder="name@upi">
+                </div>
+            </div>
+
+            <!-- Net Banking -->
+            <div id="netbanking-details" class="payment-details-group" style="display: none;">
+                <div class="form-group">
+                    <label>Select Bank</label>
+                    <select>
+                        <option>HDFC Bank</option>
+                        <option>State Bank of India</option>
+                        <option>ICICI Bank</option>
+                        <option>Axis Bank</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Wallet -->
+            <div id="wallet-details" class="payment-details-group" style="display: none;">
+                <div class="form-group">
+                    <label>Select Wallet</label>
+                    <select>
+                        <option>Paytm</option>
+                        <option>PhonePe</option>
+                        <option>Google Pay</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" id="submit-pay-btn" class="btn btn-primary" style="width:100%; padding: 1.25rem; font-size: 1.15rem; margin-top: 1.5rem; background: linear-gradient(135deg, #10b981, #059669);">
+                <span class="btn-text">
+                    <i class="fa-solid fa-check-circle"></i> Pay Now
+                </span>
+                <span class="btn-spinner" style="display: none;"></span>
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Variables
+    const originalTotal = {{ grand_total }};
+    let currentTotal = originalTotal;
+    const promoInput = document.getElementById('promo-code');
+    const applyBtn = document.getElementById('apply-promo-btn');
+    const promoMsg = document.getElementById('promo-message');
+    const displayTotal = document.getElementById('display-total');
+    const originalTotalDisplay = document.getElementById('original-total');
+    const btnTotal = document.getElementById('btn-total');
+    const modalTotal = document.getElementById('modal-total');
+    const hiddenPromoCode = document.getElementById('hidden_promo_code');
+
+    // Promo Code Application
+    if(applyBtn) {
+        applyBtn.addEventListener('click', async () => {
+            const code = promoInput.value.trim().toUpperCase();
+            if(!code) {
+                promoMsg.style.color = '#ef4444';
+                promoMsg.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Please enter a promo code';
+                return;
+            }
+            
+            try {
+                const res = await fetch("{{ url_for('booking.apply_promo') }}", {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({code: code})
+                });
+                const data = await res.json();
+                
+                if(data.valid) {
+                    const discountAmount = (originalTotal * data.discount_percent) / 100;
+                    currentTotal = originalTotal - discountAmount;
+                    
+                    promoMsg.style.color = '#10b981';
+                    promoMsg.innerHTML = `<i class="fa-solid fa-circle-check"></i> Success! ${data.discount_percent}% discount applied (You saved ₹${discountAmount.toFixed(2)})`;
+                    
+                    originalTotalDisplay.style.display = 'block';
+                    originalTotalDisplay.innerText = `₹${originalTotal.toFixed(2)}`;
+                    
+                    const newTotalStr = `₹${currentTotal.toFixed(2)}`;
+                    displayTotal.innerText = newTotalStr;
+                    btnTotal.innerText = newTotalStr;
+                    modalTotal.innerText = newTotalStr;
+                    hiddenPromoCode.value = code;
+                    
+                    applyBtn.disabled = true;
+                    applyBtn.innerText = 'Applied ✓';
+                    applyBtn.style.background = '#10b981';
+                    promoInput.disabled = true;
+                } else {
+                    promoMsg.style.color = '#ef4444';
+                    promoMsg.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Invalid promo code. Try SAKKATH, BOMBAAT, or WELCOME';
+                }
+            } catch (err) {
+                console.error(err);
+                promoMsg.style.color = '#ef4444';
+                promoMsg.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Error applying code';
+            }
+        });
+
+        // Allow Enter key
+        promoInput.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') {
+                e.preventDefault();
+                applyBtn.click();
+            }
+        });
+    }
+
+    // Modal Controls
+    const overlay = document.getElementById('payment-modal-overlay');
+    const showModalBtn = document.getElementById('show-pay-modal');
+    const closeModalBtn = document.getElementById('modal-close-btn');
+    const paymentForm = document.getElementById('payment-form');
+    const submitBtn = document.getElementById('submit-pay-btn');
+    const btnText = submitBtn.querySelector('.btn-text');
+    const btnSpinner = submitBtn.querySelector('.btn-spinner');
+    const methodSelect = document.getElementById('payment_method_select');
+    const hiddenMethod = document.getElementById('final_payment_method');
+    const allGroups = document.querySelectorAll('.payment-details-group');
+    
+    // Payment method switching
+    if(methodSelect) {
+        methodSelect.addEventListener('change', function() {
+            hiddenMethod.value = this.value;
+            allGroups.forEach(g => g.style.display = 'none');
+            
+            if(this.value === 'Card') document.getElementById('card-details').style.display = 'block';
+            else if(this.value === 'UPI') document.getElementById('upi-details').style.display = 'block';
+            else if(this.value === 'Net Banking') document.getElementById('netbanking-details').style.display = 'block';
+            else if(this.value === 'Wallet') document.getElementById('wallet-details').style.display = 'block';
+        });
+    }
+
+    // Modal open/close
+    if (showModalBtn) showModalBtn.onclick = () => overlay.style.display = 'flex';
+    if (closeModalBtn) closeModalBtn.onclick = () => overlay.style.display = 'none';
+    
+    // Close on outside click
+    window.onclick = (event) => {
+        if (event.target === overlay) overlay.style.display = 'none';
+    };
+    
+    // Form submission
+    if(paymentForm) {
+        paymentForm.onsubmit = (e) => {
+            e.preventDefault();
+            btnText.style.display = 'none';
+            btnSpinner.style.display = 'inline-block';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => paymentForm.submit(), 2000);
+        };
+    }
+</script>
+
+{% endblock %}

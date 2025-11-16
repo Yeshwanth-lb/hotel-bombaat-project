@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Hotel Bombaat - Experience luxury and comfort in Namma Bengaluru">
+    <title>Hotel Bombaat Management</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.min.css') }}">
+    
+    <!-- Google Fonts - Inter for modern look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Modern Navbar with Blur Effect -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a class="nav-logo" href="{{ url_for('main.index') }}">
+                <i class="fa-solid fa-hotel"></i> 
+                Hotel Bombaat
+            </a>
+            <ul class="nav-links">
+                {% if 'user_email' in session %}
+                    <li><a href="{{ url_for('main.dashboard') }}">
+                        <i class="fa-solid fa-gauge"></i> Dashboard
+                    </a></li>
+                    <li><a href="{{ url_for('booking.rooms') }}">
+                        <i class="fa-solid fa-bed"></i> Book Room
+                    </a></li>
+                    <li><a href="{{ url_for('food.order') }}">
+                        <i class="fa-solid fa-utensils"></i> Order Food
+                    </a></li>
+                    <li><a href="{{ url_for('booking.my_bookings') }}">
+                        <i class="fa-solid fa-list-check"></i> My Bookings
+                    </a></li>
+                    <li><a href="{{ url_for('booking.billing') }}">
+                        <i class="fa-solid fa-credit-card"></i> Billing
+                    </a></li>
+                    <li><a href="{{ url_for('main.reviews') }}">
+                        <i class="fa-solid fa-star"></i> Reviews
+                    </a></li>
+
+                    {% if session.is_admin %}
+                    <li><a href="{{ url_for('admin.dashboard') }}" class="btn btn-danger btn-sm">
+                        <i class="fa-solid fa-shield-halved"></i> Admin Panel
+                    </a></li>
+                    {% endif %}
+
+                    <li><a href="{{ url_for('auth.logout') }}" class="btn btn-secondary-outline btn-sm">
+                        <i class="fa-solid fa-right-from-bracket"></i> Logout
+                    </a></li>
+                {% else %}
+                    <li><a href="{{ url_for('main.index') }}">
+                        <i class="fa-solid fa-home"></i> Home
+                    </a></li>
+                    <li><a href="{{ url_for('main.gallery') }}">
+                        <i class="fa-solid fa-images"></i> Gallery
+                    </a></li>
+                    <li><a href="{{ url_for('main.reviews') }}">
+                        <i class="fa-solid fa-star"></i> Reviews
+                    </a></li>
+                    <li><a href="{{ url_for('main.contact') }}">
+                        <i class="fa-solid fa-envelope"></i> Contact
+                    </a></li>
+                    <li><a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-sm">
+                        <i class="fa-solid fa-right-to-bracket"></i> Login
+                    </a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Flash Messages (Modern Toast Style) -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages container">
+                {% for category, message in messages %}
+                    <div class="flash flash-{{ category }}">
+                        {% if category == 'success' %}
+                            <i class="fa-solid fa-circle-check"></i>
+                        {% elif category == 'error' %}
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        {% elif category == 'warning' %}
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        {% else %}
+                            <i class="fa-solid fa-circle-info"></i>
+                        {% endif %}
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Page Content -->
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Modern Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div style="display: flex; flex-direction: column; gap: 1rem; align-items: center;">
+                <div style="display: flex; gap: 2rem; font-size: 1.5rem;">
+                    <a href="#" style="color: rgba(255, 255, 255, 0.7); transition: all 0.3s;" 
+                       onmouseover="this.style.color='#f59e0b'; this.style.transform='scale(1.2)'" 
+                       onmouseout="this.style.color='rgba(255, 255, 255, 0.7)'; this.style.transform='scale(1)'">
+                        <i class="fa-brands fa-facebook"></i>
+                    </a>
+                    <a href="#" style="color: rgba(255, 255, 255, 0.7); transition: all 0.3s;" 
+                       onmouseover="this.style.color='#f59e0b'; this.style.transform='scale(1.2)'" 
+                       onmouseout="this.style.color='rgba(255, 255, 255, 0.7)'; this.style.transform='scale(1)'">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="#" style="color: rgba(255, 255, 255, 0.7); transition: all 0.3s;" 
+                       onmouseover="this.style.color='#f59e0b'; this.style.transform='scale(1.2)'" 
+                       onmouseout="this.style.color='rgba(255, 255, 255, 0.7)'; this.style.transform='scale(1)'">
+                        <i class="fa-brands fa-twitter"></i>
+                    </a>
+                    <a href="#" style="color: rgba(255, 255, 255, 0.7); transition: all 0.3s;" 
+                       onmouseover="this.style.color='#f59e0b'; this.style.transform='scale(1.2)'" 
+                       onmouseout="this.style.color='rgba(255, 255, 255, 0.7)'; this.style.transform='scale(1)'">
+                        <i class="fa-brands fa-linkedin"></i>
+                    </a>
+                </div>
+                <p style="margin: 0.5rem 0; font-size: 1.05rem;">
+                    <i class="fa-solid fa-hotel" style="color: #f59e0b;"></i> 
+                    <strong style="color: #fff;">Hotel Bombaat</strong> - Where Hospitality Meets Excellence
+                </p>
+                <p style="margin: 0; font-size: 0.9rem;">
+                    <i class="fa-solid fa-location-dot" style="color: #f59e0b;"></i> 
+                    Indiranagar, Bengaluru, Karnataka, India
+                </p>
+                <p style="margin: 0; font-size: 0.85rem;">
+                    &copy; 2025 Hotel Bombaat. All rights reserved. | 
+                    <a href="{{ url_for('main.contact') }}" style="color: #f59e0b;">Contact Us</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Modern Floating Chatbot -->
+    <button id="chatbot-toggler" class="chatbot-toggler" aria-label="Open chatbot">
+        <i class="fa-solid fa-robot"></i>
+    </button>
+    
+    <div class="chatbot-window" id="chatbot-window">
+        <div class="chatbot-header">
+            <h4><i class="fa-solid fa-robot"></i> Robot Bombaat</h4>
+            <span id="chatbot-close">&times;</span>
+        </div>
+        <div class="chatbot-messages" id="chatbot-messages">
+            <div class="bot-msg">
+                <p>ನಮಸ್ಕಾರ! (Namaskara!) 👋<br>How can I assist you today?</p>
+            </div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="chatbot-text" placeholder="Type your message..." aria-label="Chat input">
+            <button id="chatbot-send" aria-label="Send message">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Enhanced Chatbot Script -->
+    <script>
+        // Chatbot Elements
+        const toggler = document.getElementById('chatbot-toggler');
+        const windowChat = document.getElementById('chatbot-window');
+        const closeChat = document.getElementById('chatbot-close');
+        const sendBtn = document.getElementById('chatbot-send');
+        const inputField = document.getElementById('chatbot-text');
+        const msgBox = document.getElementById('chatbot-messages');
+
+        // Navbar Scroll Effect
+        const navbar = document.getElementById('navbar');
+        let lastScroll = 0;
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+            
+            lastScroll = currentScroll;
+        });
+
+        // Chatbot Functionality
+        if(toggler && windowChat && closeChat && sendBtn && inputField && msgBox) {
+            // Toggle chatbot window
+            toggler.onclick = () => {
+                windowChat.style.display = 'flex';
+                inputField.focus();
+            };
+            
+            closeChat.onclick = () => {
+                windowChat.style.display = 'none';
+            };
+
+            // Close on outside click
+            window.onclick = (event) => {
+                if (event.target === windowChat) {
+                    windowChat.style.display = 'none';
+                }
+            };
+
+            // Send message function
+            function sendMessage() {
+                const text = inputField.value.trim();
+                if(!text) return;
+                
+                // Add user message
+                addMessage(text, 'user-msg');
+                inputField.value = '';
+
+                // Show typing indicator
+                const typingDiv = document.createElement('div');
+                typingDiv.classList.add('bot-msg');
+                typingDiv.id = 'typing-indicator';
+                typingDiv.innerHTML = '<p style="opacity: 0.7;"><i class="fa-solid fa-ellipsis"></i> Robot Bombaat is typing...</p>';
+                msgBox.appendChild(typingDiv);
+                msgBox.scrollTop = msgBox.scrollHeight;
+
+                // Fetch response from backend
+                fetch("{{ url_for('main.chatbot') }}", {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message: text})
+                })
+                .then(res => res.json())
+                .then(data => {
+                    // Remove typing indicator
+                    const indicator = document.getElementById('typing-indicator');
+                    if(indicator) indicator.remove();
+                    
+                    // Add bot response after slight delay
+                    setTimeout(() => {
+                        addMessage(data.response, 'bot-msg');
+                    }, 300);
+                })
+                .catch(err => {
+                    console.error('Chatbot error:', err);
+                    const indicator = document.getElementById('typing-indicator');
+                    if(indicator) indicator.remove();
+                    addMessage('Sorry, I encountered an error. Please try again.', 'bot-msg');
+                });
+            }
+
+            // Add message to chat
+            function addMessage(text, className) {
+                const div = document.createElement('div');
+                div.classList.add(className);
+                div.innerHTML = `<p>${text}</p>`;
+                msgBox.appendChild(div);
+                msgBox.scrollTop = msgBox.scrollHeight;
+            }
+
+            // Event listeners
+            sendBtn.onclick = sendMessage;
+            inputField.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+        }
+
+        // Flash messages auto-dismiss
+        document.addEventListener('DOMContentLoaded', () => {
+            const flashMessages = document.querySelectorAll('.flash');
+            flashMessages.forEach((message, index) => {
+                setTimeout(() => {
+                    message.style.animation = 'slideOutRight 0.4s ease-out forwards';
+                    setTimeout(() => message.remove(), 400);
+                }, 5000 + (index * 500)); // Stagger dismissal
+            });
+        });
+
+        // Add slide out animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideOutRight {
+                to {
+                    transform: translateX(120%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

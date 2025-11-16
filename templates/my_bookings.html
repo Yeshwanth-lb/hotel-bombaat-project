@@ -1,0 +1,452 @@
+{% extends "base.html" %}
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    .bookings-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 3rem;
+        border-radius: 20px;
+        text-align: center;
+    }
+    
+    .bookings-hero h2 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        animation: fadeInDown 0.6s ease;
+    }
+    
+    .analytics-section {
+        margin-bottom: 3rem;
+    }
+    
+    .charts-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+    
+    .chart-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .chart-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+    
+    .chart-card h3 {
+        color: #667eea;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .bookings-table-wrapper {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease;
+    }
+    
+    .table-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .table-header h3 {
+        margin: 0;
+        font-size: 1.5rem;
+    }
+    
+    .filter-tabs {
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .filter-tab {
+        background: rgba(255,255,255,0.2);
+        border: none;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .filter-tab:hover,
+    .filter-tab.active {
+        background: white;
+        color: #667eea;
+    }
+    
+    .bookings-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .bookings-table thead {
+        background: #f8f9fa;
+    }
+    
+    .bookings-table th {
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        color: #495057;
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    .bookings-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #e9ecef;
+        vertical-align: middle;
+    }
+    
+    .bookings-table tbody tr {
+        transition: all 0.3s ease;
+    }
+    
+    .bookings-table tbody tr:hover {
+        background: #f8f9fa;
+        transform: scale(1.01);
+    }
+    
+    .booking-id-cell {
+        font-family: 'Courier New', monospace;
+        font-weight: 600;
+        color: #667eea;
+    }
+    
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .status-active {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .status-cancelled {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    .status-paid {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+    
+    .status-unpaid {
+        background: #fff3cd;
+        color: #856404;
+    }
+    
+    .action-btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .cancel-btn {
+        background: #dc3545;
+        color: white;
+    }
+    
+    .cancel-btn:hover {
+        background: #c82333;
+        transform: scale(1.05);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #6c757d;
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        color: #dee2e6;
+        margin-bottom: 1rem;
+    }
+    
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @media (max-width: 992px) {
+        .charts-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .bookings-table {
+            font-size: 0.9rem;
+        }
+        
+        .table-header {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="container page-section">
+    <div class="bookings-hero">
+        <h2><i class="fa-solid fa-chart-line"></i> My Bookings & Analytics</h2>
+        <p>Track your stay history and spending habits</p>
+    </div>
+    
+    {% if not bookings %}
+        <div class="empty-state">
+            <i class="fa-solid fa-calendar-xmark"></i>
+            <h3>No Bookings Yet</h3>
+            <p>You haven't made any bookings yet. Start planning your stay!</p>
+            <a href="{{ url_for('booking.rooms') }}" class="btn btn-primary btn-lg" style="margin-top: 1rem;">
+                <i class="fa-solid fa-plus"></i> Book a Room
+            </a>
+        </div>
+    {% else %}
+    
+        <section class="analytics-section">
+            <h3 style="margin-bottom: 1.5rem; color: #495057;">
+                <i class="fa-solid fa-chart-pie"></i> Analytics Dashboard
+            </h3>
+            
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3><i class="fa-solid fa-line-chart"></i> Spending Trend</h3>
+                    <canvas id="spendingChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <h3><i class="fa-solid fa-bed"></i> Room Preferences</h3>
+                    <canvas id="roomChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <div class="bookings-table-wrapper">
+            <div class="table-header">
+                <h3><i class="fa-solid fa-list"></i> Booking History</h3>
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all">All</button>
+                    <button class="filter-tab" data-filter="active">Active</button>
+                    <button class="filter-tab" data-filter="cancelled">Cancelled</button>
+                </div>
+            </div>
+            
+            <table class="bookings-table">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Room Type</th>
+                        <th>Room No.</th>
+                        <th>Check-in</th>
+                        <th>Check-out</th>
+                        <th>Cost (₹)</th>
+                        <th>Status</th>
+                        <th>Payment</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr data-status="{{ booking.status }}">
+                        <td class="booking-id-cell">{{ booking.booking_id[:8] }}...</td>
+                        <td><strong>{{ booking.room_type }}</strong></td>
+                        <td>{{ booking.room_number }}</td>
+                        <td>{{ booking.check_in }}</td>
+                        <td>{{ booking.check_out }}</td>
+                        <td><strong>{{ "%.2f"|format(booking.total_cost) }}</strong></td>
+                        <td>
+                            <span class="status-badge status-{{ booking.status }}">
+                                <i class="fa-solid fa-{{ 'check-circle' if booking.status == 'active' else 'times-circle' }}"></i>
+                                {{ booking.status|capitalize }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge status-{{ booking.payment_status }}">
+                                <i class="fa-solid fa-{{ 'check' if booking.payment_status == 'paid' else 'clock' }}"></i>
+                                {{ booking.payment_status|capitalize }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if booking.status == 'active' %}
+                                <button class="action-btn cancel-btn" onclick="confirmCancel('{{ booking.booking_id }}')">
+                                    <i class="fa-solid fa-ban"></i> Cancel
+                                </button>
+                            {% else %}
+                                <span style="color: #adb5bd;">N/A</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    // Filter functionality
+    const filterTabs = document.querySelectorAll('.filter-tab');
+    const tableRows = document.querySelectorAll('.bookings-table tbody tr');
+    
+    filterTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Update active tab
+            filterTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            
+            const filter = tab.dataset.filter;
+            
+            // Filter rows
+            tableRows.forEach(row => {
+                if (filter === 'all' || row.dataset.status === filter) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    });
+    
+    // Cancel booking confirmation
+    function confirmCancel(bookingId) {
+        if (confirm('Are you sure you want to cancel this booking? This action cannot be undone.')) {
+            window.location.href = `/booking/cancel/${bookingId}`;
+        }
+    }
+
+    // Chart.js data
+    const dates = {{ chart_dates | tojson }};
+    const spending = {{ chart_spending | tojson }};
+    const rooms = {{ chart_rooms | tojson }};
+    const roomCounts = {{ chart_room_counts | tojson }};
+
+    // Spending Line Chart
+    if(dates.length > 0) {
+        const ctx1 = document.getElementById('spendingChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Amount Spent (₹)',
+                    data: spending,
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#667eea',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Room Preferences Doughnut Chart
+        const ctx2 = document.getElementById('roomChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: rooms,
+                datasets: [{
+                    label: 'Bookings',
+                    data: roomCounts,
+                    backgroundColor: [
+                        '#667eea',
+                        '#764ba2',
+                        '#ff9966',
+                        '#dc3545',
+                        '#28a745'
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 15
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            usePointStyle: true
+                        }
+                    }
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

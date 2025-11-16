@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container page-section">
+    <div class="text-center" style="margin-bottom: 2rem;">
+        <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem;">Hotel Gallery</h2>
+        <p style="font-size: 1.1rem; color: #666;">ನಮ್ಮ ಹೋಟೆಲ್ ನೋಡಿ (Explore the style and vibe of Hotel Bombaat)</p>
+    </div>
+    
+    <!-- Category Tabs -->
+    <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
+        <button class="gallery-tab active" data-category="all">
+            <i class="fa-solid fa-images"></i> All Photos
+        </button>
+        <button class="gallery-tab" data-category="rooms">
+            <i class="fa-solid fa-bed"></i> Rooms
+        </button>
+        <button class="gallery-tab" data-category="amenities">
+            <i class="fa-solid fa-swimming-pool"></i> Amenities
+        </button>
+        <button class="gallery-tab" data-category="dining">
+            <i class="fa-solid fa-utensils"></i> Dining
+        </button>
+    </div>
+    
+    <div class="gallery-grid" id="gallery-container">
+        <div class="gallery-item" data-category="rooms">
+            <img src="{{ url_for('static', filename='uploads/suite.jpg.png') }}" alt="Bombaat Suite">
+            <div class="gallery-overlay">
+                <h4>Presidential Suite</h4>
+                <p>Ultimate Luxury</p>
+            </div>
+        </div>
+        
+        <div class="gallery-item" data-category="amenities">
+            <img src="{{ url_for('static', filename='uploads/lobby.jpg.png') }}" alt="Kirik Lobby">
+            <div class="gallery-overlay">
+                <h4>Grand Lobby</h4>
+                <p>First Impressions</p>
+            </div>
+        </div>
+        
+        <div class="gallery-item" data-category="amenities">
+            <img src="{{ url_for('static', filename='uploads/pool.jpg.png') }}" alt="Swimming Pool">
+            <div class="gallery-overlay">
+                <h4>Infinity Pool</h4>
+                <p>Rooftop Paradise</p>
+            </div>
+        </div>
+        
+        <div class="gallery-item" data-category="dining">
+            <img src="{{ url_for('static', filename='uploads/restaurant.jpg.png') }}" alt="Sakkath Restaurant">
+            <div class="gallery-overlay">
+                <h4>Sakkath Restaurant</h4>
+                <p>Multi-Cuisine Dining</p>
+            </div>
+        </div>
+        
+        <div class="gallery-item" data-category="rooms">
+            <img src="{{ url_for('static', filename='uploads/room.jpg.png') }}" alt="Deluxe Room">
+            <div class="gallery-overlay">
+                <h4>Deluxe Room</h4>
+                <p>Comfort & Style</p>
+            </div>
+        </div>
+        
+        <div class="gallery-item" data-category="amenities">
+            <img src="{{ url_for('static', filename='uploads/exterior.jpg.png') }}" alt="Hotel Exterior">
+            <div class="gallery-overlay">
+                <h4>Hotel Exterior</h4>
+                <p>Modern Architecture</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.gallery-tab {
+    padding: 0.75rem 1.5rem;
+    border: 2px solid #ddd;
+    background: white;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.gallery-tab:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.gallery-tab.active {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border-color: transparent;
+}
+
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.gallery-item img {
+    transition: transform 0.5s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.1);
+}
+
+.gallery-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    color: white;
+    padding: 1.5rem;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover .gallery-overlay {
+    transform: translateY(0);
+}
+
+.gallery-overlay h4 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.1rem;
+}
+
+.gallery-overlay p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.gallery-item.hidden {
+    display: none;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tabs = document.querySelectorAll('.gallery-tab');
+    const items = document.querySelectorAll('.gallery-item');
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            // Remove active from all tabs
+            tabs.forEach(t => t.classList.remove('active'));
+            // Add active to clicked tab
+            this.classList.add('active');
+            
+            const category = this.getAttribute('data-category');
+            
+            items.forEach(item => {
+                if (category === 'all' || item.getAttribute('data-category') === category) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

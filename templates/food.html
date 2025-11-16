@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container page-section" style="padding-top: 3rem;">
+    <!-- Page Header -->
+    <div style="text-align: center; margin-bottom: 3rem;">
+        <h2 style="font-size: 3rem; margin-bottom: 1rem;">
+            Order <span style="background: linear-gradient(135deg, #f59e0b, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Delicious Food</span>
+        </h2>
+        <p style="font-size: 1.2rem; color: #475569;">
+            <span style="font-weight: 700; color: #f59e0b;">ರುಚಿಕರವಾದ ಆಹಾರ</span> - Direct to your room
+        </p>
+    </div>
+
+    <div class="food-layout">
+        <!-- Left Column: Menu -->
+        <div class="menu-container">
+            {% for category, items in menu.items() %}
+                <section class="menu-category">
+                    <h3 style="font-size: 1.75rem; color: #1e293b; display: flex; align-items: center; gap: 0.75rem;">
+                        {% if category == 'North Indian' %}
+                            <i class="fa-solid fa-pepper-hot" style="color: #ef4444;"></i>
+                        {% elif category == 'South Indian' %}
+                            <i class="fa-solid fa-bowl-rice" style="color: #10b981;"></i>
+                        {% elif category == 'Chinese' %}
+                            <i class="fa-solid fa-dragon" style="color: #f59e0b;"></i>
+                        {% elif category == 'Continental' %}
+                            <i class="fa-solid fa-utensils" style="color: #8b5cf6;"></i>
+                        {% elif category == 'Desserts' %}
+                            <i class="fa-solid fa-ice-cream" style="color: #ec4899;"></i>
+                        {% elif category == 'Beverages' %}
+                            <i class="fa-solid fa-mug-hot" style="color: #6366f1;"></i>
+                        {% endif %}
+                        {{ category }}
+                    </h3>
+                    
+                    {% for item in items %}
+                    <div class="menu-item-card">
+                        <div class="item-details" style="flex-grow: 1;">
+                            <h4 style="margin-bottom: 0.5rem; font-size: 1.15rem; color: #1e293b;">{{ item.name }}</h4>
+                            <p style="margin: 0.25rem 0 0.75rem 0; font-size: 0.9rem; color: #64748b;">{{ item.description }}</p>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span class="item-price" style="font-size: 1.25rem; font-weight: 700; color: #f59e0b;">
+                                    ₹{{ item.price|int }}
+                                </span>
+                                {% if item.price < 200 %}
+                                <span style="background: #d1fae5; color: #065f46; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">
+                                    Value Deal
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <form method="POST" action="{{ url_for('food.add_to_cart') }}" class="item-action">
+                            <input type="hidden" name="name" value="{{ item.name }}">
+                            <input type="hidden" name="price" value="{{ item.price }}">
+                            <button type="submit" class="btn btn-primary btn-sm" style="padding: 0.75rem 1.25rem; white-space: nowrap;">
+                                <i class="fa-solid fa-plus"></i> Add
+                            </button>
+                        </form>
+                    </div>
+                    {% endfor %}
+                </section>
+            {% endfor %}
+        </div>
+
+        <!-- Right Column: Cart (Sticky) -->
+        <aside class="cart-container card-form" style="padding: 2rem;">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <i class="fa-solid fa-cart-shopping" style="font-size: 2.5rem; background: linear-gradient(135deg, #f59e0b, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
+                <h3 style="margin-top: 1rem; color: #1e293b; font-size: 1.5rem;">Your Cart</h3>
+            </div>
+
+            {% if not cart or cart|length == 0 %}
+                <div style="text-align: center; padding: 3rem 1rem;">
+                    <i class="fa-solid fa-shopping-basket" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+                    <p style="color: #64748b; margin: 0; font-size: 1.05rem;">Your cart is empty</p>
+                    <p style="color: #94a3b8; margin: 0.5rem 0 0 0; font-size: 0.9rem;">Add items to get started!</p>
+                </div>
+            {% else %}
+                <ul class="cart-items">
+                    {% for item in cart %}
+                    <li style="padding: 1rem 0; border-bottom: 2px solid #e2e8f0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span style="font-weight: 600; color: #1e293b; font-size: 1.05rem;">{{ item.name }}</span>
+                            <a href="{{ url_for('food.remove_from_cart', item_name=item.name) }}" class="cart-remove" style="font-size: 1.25rem;">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #64748b; font-size: 0.95rem;">
+                                <i class="fa-solid fa-xmark" style="font-size: 0.85rem;"></i> {{ item.quantity }}
+                            </span>
+                            <span style="font-weight: 700; color: #f59e0b; font-size: 1.1rem;">
+                                ₹{{ "%.2f"|format(item.price * item.quantity) }}
+                            </span>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                
+                <hr style="margin: 1.5rem 0; border: none; border-top: 2px solid #e2e8f0;">
+                
+                <div class="cart-total" style="padding: 1rem 0; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); margin: 0 -2rem; padding-left: 2rem; padding-right: 2rem; border-radius: 12px;">
+                    <strong style="font-size: 1.15rem; color: #92400e;">Total Amount:</strong>
+                    <strong style="font-size: 1.75rem; color: #92400e;">₹{{ "%.2f"|format(total) }}</strong>
+                </div>
+
+                <form method="POST" action="{{ url_for('food.order') }}" class="order-form" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid #e2e8f0;">
+                    <div class="form-group">
+                        <label for="room_number" style="font-size: 1rem; color: #1e293b;">
+                            <i class="fa-solid fa-door-open"></i> Delivery to Room Number
+                        </label>
+                        <input type="number" name="room_number" id="room_number" 
+                               placeholder="e.g., 101" required 
+                               style="font-size: 1rem; padding: 1rem; text-align: center; font-weight: 600;">
+                        <small style="display: block; margin-top: 0.5rem; color: #64748b; text-align: center;">
+                            ದಯವಿಟ್ಟು ನಮೂದಿಸಿ (Please enter your room number)
+                        </small>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1.25rem; font-size: 1.15rem; margin-top: 1rem; background: linear-gradient(135deg, #10b981, #059669);">
+                        <i class="fa-solid fa-check-circle"></i> Place Order
+                    </button>
+
+                    <p style="text-align: center; margin-top: 1rem; font-size: 0.85rem; color: #64748b;">
+                        <i class="fa-solid fa-clock"></i> Estimated delivery: 20-30 minutes
+                    </p>
+                </form>
+            {% endif %}
+        </aside>
+    </div>
+
+    <!-- Special Offers Banner -->
+    <div style="margin-top: 4rem; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); padding: 3rem 2rem; border-radius: 16px; text-align: center; color: white; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -30px; right: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; filter: blur(40px);"></div>
+        <h3 style="color: white; font-size: 2rem; margin-bottom: 1rem;">🎉 Special Offers</h3>
+        <p style="color: rgba(255,255,255,0.95); font-size: 1.15rem; max-width: 600px; margin: 0 auto;">
+            Order above ₹500 and get <strong style="color: #fbbf24;">FREE delivery</strong> + a complimentary dessert!
+        </p>
+    </div>
+</div>
+
+<style>
+    /* Smooth animations for cart updates */
+    .cart-items li {
+        animation: slideInLeft 0.3s ease-out;
+    }
+    
+    @keyframes slideInLeft {
+        from {
+            transform: translateX(-20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    .menu-item-card {
+        animation: fadeInUp 0.4s ease-out;
+    }
+    
+    @media (max-width: 768px) {
+        .food-layout {
+            grid-template-columns: 1fr;
+        }
+        
+        .cart-container {
+            position: static;
+            margin-top: 2rem;
+        }
+    }
+</style>
+
+{% endblock %}

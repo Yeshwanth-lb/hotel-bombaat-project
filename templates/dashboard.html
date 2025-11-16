@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+    <!-- Enhanced Dashboard Header -->
+    <header class="dashboard-header" style="margin-top: 2.5rem;">
+        <div style="position: relative; z-index: 2;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
+                <div>
+                    <h2 style="margin-bottom: 0.5rem; font-size: 2.25rem;">
+                        ನಮಸ್ಕಾರ, <span style="color: #fbbf24;">{{ session.username }}</span>! 👋
+                    </h2>
+                    <p style="margin: 0; font-size: 1.1rem; color: rgba(255,255,255,0.9);">
+                        Welcome back to your personalized dashboard
+                    </p>
+                </div>
+                <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 1rem 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);">
+                    <div style="font-size: 0.85rem; opacity: 0.9; margin-bottom: 0.25rem;">Today's Date</div>
+                    <div style="font-size: 1.15rem; font-weight: 700;">
+                        <i class="fa-solid fa-calendar-day"></i> 
+                        <span id="current-date"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Enhanced Stats Grid with Animations -->
+    <div class="stats-grid" style="margin-top: 3rem;">
+        <!-- Bombaat Points Card (Special Gold Style) -->
+        <div class="stat-card" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: white; border: none;">
+            <i class="fa-solid fa-crown" style="color: white; font-size: 3rem;"></i>
+            <h3 style="color: rgba(255,255,255,0.95); text-transform: uppercase; letter-spacing: 1px;">Bombaat Points</h3>
+            <p style="color: white; font-size: 3rem;">{{ stats.loyalty_points }}</p>
+            <small style="font-size: 0.85rem; opacity: 0.9; margin-top: 0.5rem; display: block;">
+                Earn 1 point for every ₹100 spent
+            </small>
+        </div>
+        
+        <!-- Active Bookings Card -->
+        <div class="stat-card">
+            <i class="fa-solid fa-briefcase"></i>
+            <h3>Active Bookings</h3>
+            <p>{{ stats.active_bookings }}</p>
+            <small style="font-size: 0.85rem; color: #64748b; margin-top: 0.5rem; display: block;">
+                {% if stats.active_bookings > 0 %}
+                    You have ongoing reservations
+                {% else %}
+                    No active bookings yet
+                {% endif %}
+            </small>
+        </div>
+        
+        <!-- Food Orders Card -->
+        <div class="stat-card">
+            <i class="fa-solid fa-utensils"></i>
+            <h3>Total Food Orders</h3>
+            <p>{{ stats.food_orders }}</p>
+            <small style="font-size: 0.85rem; color: #64748b; margin-top: 0.5rem; display: block;">
+                Delicious meals delivered
+            </small>
+        </div>
+        
+        <!-- Total Spent Card -->
+        <div class="stat-card">
+            <i class="fa-solid fa-wallet"></i>
+            <h3>Total Spent</h3>
+            <p style="font-size: 2rem;">₹{{ stats.total_spent|int }}</p>
+            <small style="font-size: 0.85rem; color: #64748b; margin-top: 0.5rem; display: block;">
+                Lifetime investment in comfort
+            </small>
+        </div>
+    </div>
+
+    <!-- Quick Actions Section (Enhanced) -->
+    <div class="quick-actions" style="margin-top: 3rem; background: white; padding: 2.5rem; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+            <h3 style="margin: 0; font-size: 1.75rem; color: #1e293b;">
+                <i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> Quick Actions
+            </h3>
+            <span style="font-size: 0.9rem; color: #64748b;">Jump straight to what you need</span>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+            <a href="{{ url_for('booking.rooms') }}" class="btn btn-primary" style="padding: 1.25rem 1.5rem; justify-content: center; text-align: center;">
+                <i class="fa-solid fa-plus"></i> New Booking
+            </a>
+            <a href="{{ url_for('food.order') }}" class="btn btn-secondary" style="padding: 1.25rem 1.5rem; justify-content: center; text-align: center; background: linear-gradient(135deg, #f59e0b, #f97316); color: white;">
+                <i class="fa-solid fa-burger"></i> Order Food
+            </a>
+            <a href="{{ url_for('booking.my_bookings') }}" class="btn btn-secondary" style="padding: 1.25rem 1.5rem; justify-content: center; text-align: center;">
+                <i class="fa-solid fa-list-check"></i> My Bookings
+            </a>
+            <a href="{{ url_for('booking.billing') }}" class="btn btn-primary" style="padding: 1.25rem 1.5rem; justify-content: center; text-align: center; background: linear-gradient(135deg, #10b981, #059669); color: white;">
+                <i class="fa-solid fa-indian-rupee-sign"></i> Pay Bills
+            </a>
+        </div>
+    </div>
+
+    <!-- Recent Activity / Tips Section -->
+    <div style="margin-top: 3rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+        <!-- Tips Card -->
+        <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 2.5rem; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 2px solid #3b82f6;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                <i class="fa-solid fa-lightbulb" style="font-size: 2.5rem; color: #f59e0b;"></i>
+                <h3 style="margin: 0; color: #1e40af; font-size: 1.5rem;">Pro Tips</h3>
+            </div>
+            <ul style="list-style: none; padding: 0; margin: 0; color: #1e40af;">
+                <li style="margin-bottom: 1rem; padding-left: 1.5rem; position: relative;">
+                    <i class="fa-solid fa-check-circle" style="position: absolute; left: 0; color: #10b981;"></i>
+                    Use promo code <strong>"BOMBAAT"</strong> for 20% off your next booking!
+                </li>
+                <li style="margin-bottom: 1rem; padding-left: 1.5rem; position: relative;">
+                    <i class="fa-solid fa-check-circle" style="position: absolute; left: 0; color: #10b981;"></i>
+                    Order breakfast between 7-10 AM for complimentary chai ☕
+                </li>
+                <li style="margin-bottom: 0; padding-left: 1.5rem; position: relative;">
+                    <i class="fa-solid fa-check-circle" style="position: absolute; left: 0; color: #10b981;"></i>
+                    Don't forget to check out our rooftop infinity pool!
+                </li>
+            </ul>
+        </div>
+
+        <!-- Loyalty Progress Card -->
+        <div style="background: white; padding: 2.5rem; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 2px solid #e2e8f0;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                <i class="fa-solid fa-gift" style="font-size: 2.5rem; color: #8b5cf6;"></i>
+                <h3 style="margin: 0; color: #1e293b; font-size: 1.5rem;">Loyalty Rewards</h3>
+            </div>
+            <div style="margin-bottom: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span style="font-weight: 600; color: #1e293b;">Your Points</span>
+                    <span style="font-weight: 700; color: #8b5cf6; font-size: 1.25rem;">{{ stats.loyalty_points }}</span>
+                </div>
+                <div style="background: #e2e8f0; height: 12px; border-radius: 999px; overflow: hidden;">
+                    {% set progress = (stats.loyalty_points % 100) %}
+                    <div style="background: linear-gradient(90deg, #8b5cf6, #6366f1); height: 100%; width: {{ progress }}%; transition: width 1s ease;"></div>
+                </div>
+                <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.5rem;">
+                    {{ 100 - (stats.loyalty_points % 100) }} points until your next reward!
+                </p>
+            </div>
+            <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; border-left: 3px solid #f59e0b;">
+                <p style="margin: 0; font-size: 0.9rem; color: #92400e;">
+                    <strong>🎁 Next Reward:</strong> Free room upgrade at 100 points!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Need Help Section -->
+    <div style="margin: 3rem 0 2rem; background: linear-gradient(135deg, #1e293b 0%, #334155 100%); padding: 3rem; border-radius: 16px; text-align: center; color: white; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -20px; right: -20px; width: 150px; height: 150px; background: rgba(245, 158, 11, 0.1); border-radius: 50%; filter: blur(40px);"></div>
+        <i class="fa-solid fa-headset" style="font-size: 3rem; color: #fbbf24; margin-bottom: 1rem;"></i>
+        <h3 style="margin-bottom: 1rem; font-size: 1.75rem; color: white;">Need Assistance?</h3>
+        <p style="margin-bottom: 2rem; color: rgba(255,255,255,0.9); font-size: 1.05rem;">
+            Our 24/7 support team is here to help you with anything you need
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <button onclick="document.getElementById('chatbot-toggler').click()" class="btn btn-lg" 
+                    style="background: #fbbf24; color: #1e293b; font-weight: 700; border: none;">
+                <i class="fa-solid fa-robot"></i> Chat with Robot Bombaat
+            </button>
+            <a href="{{ url_for('main.contact') }}" class="btn btn-lg" 
+               style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); color: white; border: 2px solid rgba(255,255,255,0.3);">
+                <i class="fa-solid fa-envelope"></i> Contact Us
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Display current date
+    const dateElement = document.getElementById('current-date');
+    if(dateElement) {
+        const today = new Date();
+        const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+        dateElement.textContent = today.toLocaleDateString('en-IN', options);
+    }
+
+    // Animate stat cards on load
+    document.addEventListener('DOMContentLoaded', () => {
+        const statCards = document.querySelectorAll('.stat-card');
+        statCards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease-out';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    });
+</script>
+
+{% endblock %}

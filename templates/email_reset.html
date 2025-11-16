@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Password Reset</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; }
+        .container { width: 90%; max-width: 600px; margin: 20px auto; border: 1px solid #ddd; border-radius: 15px; overflow: hidden; }
+        .header { background: #333; color: #fff; padding: 20px; text-align: center; }
+        .content { padding: 30px; }
+        .btn { display: inline-block; padding: 12px 25px; background: #667eea; color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; }
+        .footer { padding: 20px; text-align: center; color: #888; font-size: 0.8rem; background: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Password Reset Request</h2>
+        </div>
+        <div class="content">
+            <p>Hi {{ username }},</p>
+            <p>We received a request to reset your password for Hotel Bombaat. Click the button below to set a new password:</p>
+            <p style="text-align: center; margin: 30px 0;">
+                <a href="{{ reset_url }}" class="btn">Reset Your Password</a>
+            </p>
+            <p>If you did not request this, please ignore this email. This link will expire in 1 hour.</p>
+            <p>Cheers,<br>The Hotel Bombaat Team</p>
+        </div>
+        <div class="footer">
+            &copy; 2025 Hotel Bombaat. Bengaluru, Karnataka, India.
+        </div>
+    </div>
+</body>
+</html>

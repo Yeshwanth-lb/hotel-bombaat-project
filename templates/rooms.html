@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container page-section" style="padding-top: 3rem;">
+    <!-- Page Header -->
+    <div style="text-align: center; margin-bottom: 4rem;">
+        <h2 style="font-size: 3rem; margin-bottom: 1rem;">
+            Book Your <span style="background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Perfect Room</span>
+        </h2>
+        <p style="font-size: 1.2rem; color: #475569; max-width: 700px; margin: 0 auto;">
+            Choose from our luxurious rooms and check real-time availability
+        </p>
+    </div>
+
+    <div class="booking-container" style="gap: 3rem;">
+        <!-- Left Column: Booking Form -->
+        <div class="card-form" style="height: fit-content;">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <i class="fa-solid fa-bed" style="font-size: 3rem; background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
+                <h3 style="margin-top: 1rem; color: #1e293b; font-size: 1.75rem;">Booking Details</h3>
+                <p style="color: #64748b; margin: 0.5rem 0 0 0;">Fill in your stay information</p>
+            </div>
+
+            <form method="POST" action="{{ url_for('booking.rooms') }}">
+                <!-- Room Type Selection with Visual Cards -->
+                <div class="form-group">
+                    <label for="room_type" style="font-size: 1rem; margin-bottom: 1rem;">
+                        <i class="fa-solid fa-door-open"></i> Select Room Type
+                    </label>
+                    <select id="room_type" name="room_type" required style="font-size: 1rem; padding: 1rem;">
+                        {% for name, details in room_types.items() %}
+                            <option value="{{ name }}">{{ name }} - ₹{{ details.price|int }}/night</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Room Type Info Display -->
+                <div id="room-info" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; border-left: 4px solid #3b82f6;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                        <i class="fa-solid fa-circle-info" style="color: #3b82f6; font-size: 1.25rem;"></i>
+                        <strong style="color: #1e40af; font-size: 1.05rem;">Room Details</strong>
+                    </div>
+                    <p id="room-description" style="margin: 0; color: #1e40af; line-height: 1.6;">
+                        {{ room_types['Standard Single']['description'] }}
+                    </p>
+                </div>
+                
+                <!-- Date Selection -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="check_in">
+                            <i class="fa-solid fa-calendar-check"></i> Check-in Date
+                        </label>
+                        <input type="date" id="check_in" name="check_in" required style="font-size: 0.95rem;">
+                    </div>
+                    <div class="form-group">
+                        <label for="check_out">
+                            <i class="fa-solid fa-calendar-xmark"></i> Check-out Date
+                        </label>
+                        <input type="date" id="check_out" name="check_out" required style="font-size: 0.95rem;">
+                    </div>
+                </div>
+
+                <!-- Number of Guests -->
+                <div class="form-group">
+                    <label for="guests">
+                        <i class="fa-solid fa-user-group"></i> Number of Guests
+                    </label>
+                    <input type="number" id="guests" name="guests" min="1" max="4" value="1" required 
+                           style="font-size: 0.95rem;" placeholder="How many guests?">
+                    <small style="display: block; margin-top: 0.5rem; color: #64748b;">
+                        Maximum 4 guests per room
+                    </small>
+                </div>
+
+                <!-- Price Preview -->
+                <div id="price-preview" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border-left: 4px solid #f59e0b; display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <span style="color: #92400e; font-weight: 600;">Estimated Total:</span>
+                        <span id="total-price" style="color: #92400e; font-size: 1.75rem; font-weight: 800;"></span>
+                    </div>
+                    <small style="color: #92400e; font-size: 0.85rem;">
+                        <i class="fa-solid fa-circle-info"></i> Final price shown after booking
+                    </small>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1.25rem; font-size: 1.1rem; margin-top: 1rem;">
+                    <i class="fa-solid fa-check-circle"></i> Book Now
+                </button>
+
+                <p style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: #64748b;">
+                    <i class="fa-solid fa-lock"></i> Secure booking with instant confirmation
+                </p>
+            </form>
+        </div>
+
+        <!-- Right Column: Availability Calendar -->
+        <div class="room-descriptions">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <i class="fa-solid fa-calendar-days" style="font-size: 3rem; background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
+                <h3 style="margin-top: 1rem; color: #1e293b; font-size: 1.75rem;">Room Availability</h3>
+                <p style="color: #64748b; margin: 0.5rem 0 0 0;">
+                    Select a room type to see available dates
+                </p>
+            </div>
+            
+            <div class="calendar-container" style="padding: 2rem;">
+                <div class="calendar-header">
+                    <button type="button" class="btn btn-sm btn-secondary" id="prev-month">
+                        <i class="fa-solid fa-chevron-left"></i> Prev
+                    </button>
+                    <h4 id="month-year" style="font-size: 1.25rem; color: #1e293b;"></h4>
+                    <button type="button" class="btn btn-sm btn-secondary" id="next-month">
+                        Next <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="calendar-grid-header" style="margin-top: 1.5rem;">
+                    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+                </div>
+                
+                <div class="calendar-grid" id="calendar-days-grid" style="margin-top: 1rem;">
+                    <!-- Calendar days populated by JavaScript -->
+                </div>
+
+                <!-- Legend -->
+                <div style="display: flex; gap: 1.5rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div style="width: 20px; height: 20px; background: #6366f1; border-radius: 6px;"></div>
+                        <span style="font-size: 0.85rem; color: #64748b;">Today</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div style="width: 20px; height: 20px; background: #ef4444; border-radius: 6px;"></div>
+                        <span style="font-size: 0.85rem; color: #64748b;">Booked</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div style="width: 20px; height: 20px; background: #e2e8f0; border-radius: 6px;"></div>
+                        <span style="font-size: 0.85rem; color: #64748b;">Available</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Room Type Showcase -->
+    <div style="margin-top: 5rem;">
+        <h3 style="text-align: center; font-size: 2.25rem; margin-bottom: 3rem; color: #1e293b;">
+            Explore Our <span style="color: #6366f1;">Luxury Rooms</span>
+        </h3>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+            {% for name, details in room_types.items() %}
+            <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.3s;"
+                 onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.15)'"
+                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.1)'">
+                <div style="height: 200px; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-bed" style="font-size: 4rem; color: white; opacity: 0.9;"></i>
+                </div>
+                <div style="padding: 2rem;">
+                    <h4 style="margin-bottom: 0.75rem; color: #1e293b; font-size: 1.35rem;">{{ name }}</h4>
+                    <p style="color: #64748b; margin-bottom: 1.5rem; line-height: 1.6;">{{ details.description }}</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-size: 0.85rem; color: #64748b;">From</div>
+                            <div style="font-size: 1.75rem; font-weight: 800; color: #6366f1;">₹{{ details.price|int }}</div>
+                            <div style="font-size: 0.85rem; color: #64748b;">per night</div>
+                        </div>
+                        <button onclick="document.getElementById('room_type').value='{{ name }}'; document.getElementById('room_type').dispatchEvent(new Event('change')); window.scrollTo({top: 0, behavior: 'smooth'});" 
+                                class="btn btn-primary btn-sm">
+                            Select
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const roomSelect = document.getElementById('room_type');
+    const roomInfo = document.getElementById('room-description');
+    const checkInInput = document.getElementById('check_in');
+    const checkOutInput = document.getElementById('check_out');
+    const pricePreview = document.getElementById('price-preview');
+    const totalPriceSpan = document.getElementById('total-price');
+    const monthYearDisplay = document.getElementById('month-year');
+    const calendarGrid = document.getElementById('calendar-days-grid');
+    const prevMonthBtn = document.getElementById('prev-month');
+    const nextMonthBtn = document.getElementById('next-month');
+
+    const roomDescriptions = {{ room_types|tojson }};
+    let current_date = new Date();
+    let current_month = current_date.getMonth();
+    let current_year = current_date.getFullYear();
+    let bookedDates = new Set();
+
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    checkInInput.setAttribute('min', today);
+    checkOutInput.setAttribute('min', today);
+
+    // Update room description
+    roomSelect.addEventListener('change', function() {
+        const selectedRoom = this.value;
+        if(roomDescriptions[selectedRoom]) {
+            roomInfo.textContent = roomDescriptions[selectedRoom].description;
+        }
+        fetchBookedDates();
+        calculatePrice();
+    });
+
+    // Fetch booked dates
+    async function fetchBookedDates() {
+        const selectedRoomType = roomSelect.value;
+        if (!selectedRoomType) return;
+        
+        try {
+            const response = await fetch(`/booking/get_booked_dates/${selectedRoomType}`);
+            const dates = await response.json();
+            bookedDates = new Set(dates);
+            renderCalendar(current_month, current_year);
+        } catch (error) {
+            console.error('Error fetching booked dates:', error);
+        }
+    }
+
+    // Calculate price
+    function calculatePrice() {
+        const checkIn = new Date(checkInInput.value);
+        const checkOut = new Date(checkOutInput.value);
+        const selectedRoom = roomSelect.value;
+
+        if(checkInInput.value && checkOutInput.value && checkIn < checkOut && roomDescriptions[selectedRoom]) {
+            const days = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+            const pricePerNight = roomDescriptions[selectedRoom].price;
+            const total = days * pricePerNight;
+            
+            totalPriceSpan.textContent = `₹${total.toLocaleString('en-IN')}`;
+            pricePreview.style.display = 'block';
+        } else {
+            pricePreview.style.display = 'none';
+        }
+    }
+
+    checkInInput.addEventListener('change', function() {
+        checkOutInput.setAttribute('min', this.value);
+        calculatePrice();
+    });
+    checkOutInput.addEventListener('change', calculatePrice);
+
+    // Calendar rendering
+    function renderCalendar(month, year) {
+        calendarGrid.innerHTML = '';
+        monthYearDisplay.textContent = `${new Date(year, month).toLocaleString('default', { month: 'long' })} ${year}`;
+        
+        const firstDayOfMonth = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        for (let i = 0; i < firstDayOfMonth; i++) {
+            calendarGrid.appendChild(document.createElement('div'));
+        }
+
+        for (let i = 1; i <= daysInMonth; i++) {
+            const dayCell = document.createElement('div');
+            dayCell.textContent = i;
+            dayCell.classList.add('day');
+            
+            const cellDate = new Date(year, month, i);
+            const cellDateString = cellDate.toISOString().split('T')[0];
+
+            if (cellDate < today) {
+                dayCell.classList.add('past');
+            } else if (cellDate.getTime() === today.getTime()) {
+                dayCell.classList.add('today');
+            }
+            
+            if (bookedDates.has(cellDateString)) {
+                dayCell.classList.add('booked');
+                dayCell.title = "Fully Booked";
+            }
+            
+            calendarGrid.appendChild(dayCell);
+        }
+    }
+
+    prevMonthBtn.addEventListener('click', () => {
+        current_month--;
+        if (current_month < 0) {
+            current_month = 11;
+            current_year--;
+        }
+        renderCalendar(current_month, current_year);
+    });
+
+    nextMonthBtn.addEventListener('click', () => {
+        current_month++;
+        if (current_month > 11) {
+            current_month = 0;
+            current_year++;
+        }
+        renderCalendar(current_month, current_year);
+    });
+
+    // Initialize
+    fetchBookedDates();
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "admin_base.html" %}
+{% block content %}
+<div class="admin-header">
+    <h1>Manage Bookings ({{ bookings|length }})</h1>
+    
+    <form method="GET" action="{{ url_for('admin.manage_bookings') }}" class="admin-search-form">
+        <input type="text" name="search_query" placeholder="Search by email, room type, ID..." value="{{ search_query or '' }}">
+        <button type="submit" class="btn btn-primary btn-sm">Search</button>
+        <a href="{{ url_for('admin.manage_bookings') }}" class="btn btn-secondary-outline btn-sm">Clear</a>
+    </form>
+    </div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>User Email</th>
+                <th>Room Type</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Cost (₹)</th>
+                <th>Status</th>
+                <th>Payment</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.booking_id[:8] }}...</td>
+                <td>{{ booking.user_email }}</td>
+                <td>{{ booking.room_type }}</td>
+                <td>{{ booking.check_in }}</td>
+                <td>{{ booking.check_out }}</td>
+                <td>{{ "%.2f"|format(booking.total_cost) }}</td>
+                <td><span class="status-{{ booking.status }}">{{ booking.status|capitalize }}</span></td>
+                <td><span class="status-{{ booking.payment_status }}">{{ booking.payment_status|capitalize }}</span></td>
+                <td>
+                    <a href="{{ url_for('admin.delete_booking', booking_id_str=booking.booking_id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this booking?')">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+            
+            {% if not bookings and search_query %}
+            <tr>
+                <td colspan="9" style="text-align: center;">No bookings found for "{{ search_query }}".</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

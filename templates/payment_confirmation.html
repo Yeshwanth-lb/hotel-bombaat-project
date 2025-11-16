@@ -1,0 +1,329 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    .payment-success-wrapper {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 0;
+    }
+    
+    .success-card {
+        background: white;
+        border-radius: 25px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        max-width: 700px;
+        width: 100%;
+        overflow: hidden;
+        animation: slideInUp 0.6s ease;
+    }
+    
+    .success-header {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 3rem 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .success-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: pulse 2s ease infinite;
+    }
+    
+    .success-icon {
+        font-size: 5rem;
+        margin-bottom: 1rem;
+        animation: bounceIn 0.8s ease;
+    }
+    
+    .success-header h2 {
+        margin: 0 0 0.5rem 0;
+        font-size: 2rem;
+        position: relative;
+    }
+    
+    .success-header p {
+        margin: 0;
+        font-size: 1.1rem;
+        opacity: 0.95;
+        position: relative;
+    }
+    
+    .success-body {
+        padding: 2.5rem;
+    }
+    
+    .transaction-details {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .transaction-details h3 {
+        color: #495057;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px dashed #dee2e6;
+    }
+    
+    .detail-row:last-child {
+        border-bottom: none;
+        padding-top: 1.5rem;
+        margin-top: 1rem;
+        border-top: 2px solid #28a745;
+    }
+    
+    .detail-label {
+        color: #6c757d;
+        font-weight: 500;
+    }
+    
+    .detail-value {
+        color: #212529;
+        font-weight: 600;
+    }
+    
+    .detail-row:last-child .detail-value {
+        font-size: 1.5rem;
+        color: #28a745;
+    }
+    
+    .action-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+    
+    .action-btn {
+        padding: 1rem;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+    
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-secondary-custom {
+        background: white;
+        color: #495057;
+        border: 2px solid #dee2e6;
+    }
+    
+    .btn-secondary-custom:hover {
+        background: #f8f9fa;
+        border-color: #adb5bd;
+        transform: translateY(-2px);
+    }
+    
+    .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background: #f0f;
+        position: absolute;
+        animation: confetti-fall 3s linear infinite;
+    }
+    
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes bounceIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.3);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 0.3;
+        }
+        50% {
+            transform: scale(1.1);
+            opacity: 0.5;
+        }
+    }
+    
+    @keyframes confetti-fall {
+        to {
+            transform: translateY(100vh) rotate(360deg);
+        }
+    }
+    
+    .payment-id {
+        font-family: 'Courier New', monospace;
+        background: #fff;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.9rem;
+    }
+    
+    @media (max-width: 768px) {
+        .action-buttons {
+            grid-template-columns: 1fr;
+        }
+        
+        .success-header {
+            padding: 2rem 1rem;
+        }
+        
+        .success-icon {
+            font-size: 3.5rem;
+        }
+        
+        .success-header h2 {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<div class="payment-success-wrapper">
+    <div class="container">
+        <div class="success-card">
+            <div class="success-header">
+                <i class="fa-solid fa-circle-check success-icon"></i>
+                <h2>Payment Successful!</h2>
+                <p>Your transaction has been completed successfully</p>
+            </div>
+            
+            <div class="success-body">
+                <div class="transaction-details">
+                    <h3><i class="fa-solid fa-receipt"></i> Transaction Details</h3>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Order ID</span>
+                        <span class="detail-value">{{ payment.order_id }}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Payment ID</span>
+                        <span class="detail-value payment-id">{{ payment.payment_id[:16] }}...</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Payment Method</span>
+                        <span class="detail-value">
+                            <i class="fa-solid fa-credit-card"></i> {{ payment.payment_method }}
+                        </span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Transaction Date</span>
+                        <span class="detail-value">{{ payment.created_at.strftime('%d %B %Y, %I:%M %p') }}</span>
+                    </div>
+                    
+                    {% if payment.get('discount_applied', 0) > 0 %}
+                    <div class="detail-row" style="color: #28a745;">
+                        <span class="detail-label">Discount Applied ({{ payment.promo_code }})</span>
+                        <span class="detail-value">-₹{{ "%.2f"|format(payment.discount_applied) }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="detail-row">
+                        <span class="detail-label" style="font-size: 1.2rem;">Amount Paid</span>
+                        <span class="detail-value">₹{{ "%.2f"|format(payment.amount) }}</span>
+                    </div>
+                </div>
+                
+                <div style="background: #d4edda; border-left: 4px solid #28a745; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+                    <p style="margin: 0; color: #155724;">
+                        <i class="fa-solid fa-info-circle"></i> 
+                        <strong>Confirmation Email Sent!</strong><br>
+                        We've sent a confirmation email to your registered email address with all the booking details.
+                    </p>
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="{{ url_for('main.dashboard') }}" class="action-btn btn-primary-custom">
+                        <i class="fa-solid fa-home"></i> Go to Dashboard
+                    </a>
+                    
+                    <a href="{{ url_for('payment.download_invoice', order_id=payment.order_id) }}" class="action-btn btn-secondary-custom">
+                        <i class="fa-solid fa-file-pdf"></i> Download Invoice
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Create confetti effect
+    function createConfetti() {
+        const colors = ['#667eea', '#764ba2', '#28a745', '#ffc107', '#dc3545'];
+        const confettiCount = 50;
+        
+        for (let i = 0; i < confettiCount; i++) {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.animationDelay = Math.random() * 3 + 's';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            document.body.appendChild(confetti);
+            
+            // Remove confetti after animation
+            setTimeout(() => {
+                confetti.remove();
+            }, 6000);
+        }
+    }
+    
+    // Trigger confetti on page load
+    window.addEventListener('load', () => {
+        setTimeout(createConfetti, 300);
+    });
+</script>
+
+{% endblock %}

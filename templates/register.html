@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-container">
+    <form class="card-form" method="POST" action="{{ url_for('auth.register') }}" style="max-width: 500px;">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <div style="width: 80px; height: 80px; margin: 0 auto 1rem; background: linear-gradient(135deg, var(--success-color), #20c997); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="fa-solid fa-user-plus" style="font-size: 2rem; color: white;"></i>
+            </div>
+            <h2 style="margin-bottom: 0.5rem;">Create Your Account</h2>
+            <p style="color: #666; margin: 0;">Join Hotel Bombaat today! ಸೇರಿ (Join us)</p>
+        </div>
+        
+        <div class="form-group">
+            <label for="username"><i class="fa-solid fa-user"></i> Full Name</label>
+            <input type="text" id="username" name="username" placeholder="Enter your full name" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email"><i class="fa-solid fa-envelope"></i> Email Address</label>
+            <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="phone"><i class="fa-solid fa-phone"></i> Phone Number</label>
+            <input type="tel" id="phone" name="phone" placeholder="+91 9876543210" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password"><i class="fa-solid fa-lock"></i> Password</label>
+            <input type="password" id="password" name="password" placeholder="Create a strong password" required minlength="6">
+            <small style="color: #666; font-size: 0.85rem; display: block; margin-top: 0.25rem;">
+                <i class="fa-solid fa-info-circle"></i> Minimum 6 characters
+            </small>
+        </div>
+        
+        <div style="background: #f0f8ff; border-left: 4px solid var(--primary-color); padding: 1rem; margin: 1.5rem 0; border-radius: 8px;">
+            <p style="margin: 0; font-size: 0.9rem; color: #555;">
+                <i class="fa-solid fa-shield-halved" style="color: var(--primary-color);"></i>
+                Your data is secure with us. We follow strict privacy policies.
+            </p>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.9rem;">
+            <i class="fa-solid fa-user-plus"></i> Create Account
+        </button>
+        
+        <div class="form-switch" style="margin-top: 2rem; text-align: center; padding-top: 1.5rem; border-top: 1px solid #eee;">
+            <p style="margin: 0; color: #666;">Already have an account? <a href="{{ url_for('auth.login') }}" style="font-weight: bold;">Login here</a></p>
+        </div>
+    </form>
+</div>
+{% endblock %}

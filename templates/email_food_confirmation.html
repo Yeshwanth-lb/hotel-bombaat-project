@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Food Order Confirmation</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+        .container { width: 90%; max-width: 600px; margin: 20px auto; border: 1px solid #ddd; border-radius: 15px; overflow: hidden; }
+        .header { background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%); color: #fff; padding: 20px; text-align: center; }
+        .content { padding: 30px; }
+        .details { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .details th { text-align: left; padding: 10px; background: #f4f4f4; }
+        .details td { padding: 10px; border-bottom: 1px solid #eee; }
+        .footer { padding: 20px; text-align: center; color: #888; font-size: 0.8rem; background: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Your Food Order is Confirmed!</h1>
+        </div>
+        <div class="content">
+            <p><strong>ನಮಸ್ಕಾರ (Namaskara), {{ username }}</strong>,</p>
+            <p>Your order is being prepared and will be delivered to <strong>Room {{ order.room_number }}</strong> shortly.</p>
+            
+            <table class="details">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order['items'] %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>x{{ item.quantity }}</td>
+                        <td>₹{{ "%.2f"|format(item.price * item.quantity) }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="2" style="text-align: right; font-weight: bold;">Total:</td>
+                        <td style="font-weight: bold;">₹{{ "%.2f"|format(order.total_cost) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p style="margin-top: 20px;">Enjoy your meal! (ಭೋಜನವನ್ನು ಆನಂದಿಸಿ)</p>
+            <p>The Hotel Bombaat Kitchen Team</p>
+        </div>
+        <div class="footer">
+            &copy; 2025 Hotel Bombaat. Bengaluru, Karnataka, India.
+        </div>
+    </div>
+</body>
+</html>

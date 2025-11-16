@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Stunning Hero Section with Parallax Effect -->
+<header class="hero">
+    <div class="hero-content">
+        <div style="animation: fadeInUp 0.8s ease-out;">
+            <h1>
+                <span style="color: #fbbf24; font-weight: 900;">ನಮಸ್ಕಾರ!</span> 
+                <br>Welcome to Hotel Bombaat
+            </h1>
+        </div>
+        <div style="animation: fadeInUp 1s ease-out 0.2s; opacity: 0; animation-fill-mode: forwards;">
+            <p style="font-size: 1.35rem; max-width: 700px; margin: 0 auto 2.5rem;">
+                Experience <strong style="color: #fbbf24;">Superb Luxury & Comfort</strong> in the heart of 
+                <em style="color: rgba(255,255,255,0.95);">Namma Bengaluru</em>
+            </p>
+        </div>
+        <div style="animation: fadeInUp 1.2s ease-out 0.4s; opacity: 0; animation-fill-mode: forwards; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="{{ url_for('booking.rooms') }}" class="btn btn-primary btn-lg" 
+               style="font-size: 1.15rem; padding: 1.25rem 2.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                <i class="fa-solid fa-bed"></i> Book Your Stay Now
+            </a>
+            <a href="{{ url_for('main.gallery') }}" class="btn btn-secondary btn-lg" 
+               style="font-size: 1.15rem; padding: 1.25rem 2.5rem; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border: 2px solid rgba(255,255,255,0.3);">
+                <i class="fa-solid fa-images"></i> View Gallery
+            </a>
+        </div>
+        
+        <!-- Trust Indicators -->
+        <div style="margin-top: 3rem; animation: fadeInUp 1.4s ease-out 0.6s; opacity: 0; animation-fill-mode: forwards;">
+            <div style="display: flex; gap: 3rem; justify-content: center; flex-wrap: wrap;">
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 800; color: #fbbf24;">500+</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">Happy Guests</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 800; color: #fbbf24;">4.8★</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">Average Rating</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 800; color: #fbbf24;">50+</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">Luxury Rooms</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Kannada Quote Banner -->
+<div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; text-align: center; padding: 2.5rem 1.5rem; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.1;">
+    <!-- Decorative pattern -->
+</div>
+    <div style="position: relative; z-index: 1;">
+        <h3 style="margin: 0; font-style: italic; font-size: 1.75rem; color: #fbbf24; font-weight: 700;">
+            "ಅತಿಥಿ ದೇವೋ ಭವ."
+        </h3>
+        <p style="margin: 0.75rem 0 0 0; font-size: 1.05rem; color: rgba(255,255,255,0.95);">
+            (Atithi Devo Bhava - "The guest is God." We serve with utmost respect and warmth.)
+        </p>
+    </div>
+</div>
+
+<!-- Amenities Section -->
+<section class="container page-section" style="padding: 4rem 1.5rem;">
+    <div class="text-center" style="margin-bottom: 4rem;">
+        <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">
+            Our <span style="background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Excellent</span> Amenities
+        </h2>
+        <p style="font-size: 1.15rem; color: #475569; max-width: 600px; margin: 0 auto;">
+            Everything you need for a comfortable, memorable, and truly <strong style="color: #6366f1;">Bombaat</strong> stay.
+        </p>
+    </div>
+    
+    <div class="features-grid">
+        <div class="feature-card">
+            <i class="fa-solid fa-water-ladder"></i>
+            <h3>Infinity Pool</h3>
+            <p>Relax and rejuvenate in our stunning rooftop infinity pool with panoramic city views. Open 6 AM - 10 PM.</p>
+        </div>
+
+        <div class="feature-card">
+            <i class="fa-solid fa-utensils"></i>
+            <h3>ಉತ್ತಮ ಭೋಜನ (Multi-Cuisine)</h3>
+            <p><em style="color: #8b5cf6; font-weight: 600;">"ಊಟ ಬಲ್ಲವನಿಗೆ ರೋಗ ಇಲ್ಲ."</em><br>Experience world-class dining with our expert chefs serving North Indian, South Indian, Chinese & more.</p>
+        </div>
+
+        <div class="feature-card">
+            <i class="fa-solid fa-wifi"></i>
+            <h3>High-Speed Wi-Fi</h3>
+            <p>Stay connected with complimentary 500 Mbps fiber internet access throughout the hotel property.</p>
+        </div>
+
+        <div class="feature-card">
+            <i class="fa-solid fa-dumbbell"></i>
+            <h3>24/7 Fitness Center</h3>
+            <p>Maintain your workout routine in our fully equipped, state-of-the-art fitness center with modern equipment.</p>
+        </div>
+
+        <div class="feature-card">
+            <i class="fa-solid fa-martini-glass-citrus"></i>
+            <h3>Rooftop Lounge</h3>
+            <p>Unwind with premium cocktails and mocktails while enjoying breathtaking views of the Bengaluru skyline.</p>
+        </div>
+
+        <div class="feature-card">
+            <i class="fa-solid fa-bell-concierge"></i>
+            <h3>24/7 Concierge Service</h3>
+            <p><em style="color: #8b5cf6; font-weight: 600;">"ಅತಿಥಿ ದೇವೋ ಭವ."</em><br>Our dedicated staff is always ready to serve you with warmth and professionalism.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us Section -->
+<section style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 5rem 0; margin-top: 4rem;">
+    <div class="container">
+        <div class="text-center" style="margin-bottom: 3rem;">
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">
+                Why Choose <span style="background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Hotel Bombaat?</span>
+            </h2>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2.5rem;">
+            <div style="text-align: center; padding: 2rem; background: white; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.3s;" 
+                 onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.15)'"
+                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.1)'">
+                <i class="fa-solid fa-heart" style="font-size: 3rem; color: #ef4444; margin-bottom: 1rem;"></i>
+                <h4 style="margin-bottom: 0.75rem; font-size: 1.35rem; color: #1e293b;">ನಮ್ಮ ಪ್ರೀತಿ (Our Love)</h4>
+                <p style="color: #475569; margin: 0;">We treat every guest like family, with genuine care, respect, and the warmth of Bangalore hospitality.</p>
+            </div>
+            
+            <div style="text-align: center; padding: 2rem; background: white; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.3s;" 
+                 onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.15)'"
+                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.1)'">
+                <i class="fa-solid fa-indian-rupee-sign" style="font-size: 3rem; color: #10b981; margin-bottom: 1rem;"></i>
+                <h4 style="margin-bottom: 0.75rem; font-size: 1.35rem; color: #1e293b;">Best Value for Money</h4>
+                <p style="color: #475569; margin: 0;">Premium luxury stays at competitive prices. Experience 5-star comfort without breaking the bank.</p>
+            </div>
+            
+            <div style="text-align: center; padding: 2rem; background: white; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.3s;" 
+                 onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.15)'"
+                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.1)'">
+                <i class="fa-solid fa-location-dot" style="font-size: 3rem; color: #6366f1; margin-bottom: 1rem;"></i>
+                <h4 style="margin-bottom: 0.75rem; font-size: 1.35rem; color: #1e293b;">Prime Location</h4>
+                <p style="color: #475569; margin: 0;">Located in Indiranagar - the heart of Bengaluru. Walking distance to metro, restaurants, and attractions.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="container" style="padding: 5rem 1.5rem; text-align: center;">
+    <div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); padding: 4rem 3rem; border-radius: 24px; box-shadow: 0 20px 50px rgba(99, 102, 241, 0.3); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; filter: blur(60px);"></div>
+        <div style="position: absolute; bottom: -50px; left: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; filter: blur(60px);"></div>
+        
+        <div style="position: relative; z-index: 1;">
+            <h2 style="color: white; font-size: 2.5rem; margin-bottom: 1rem;">Ready for a Bombaat Experience?</h2>
+            <p style="color: rgba(255,255,255,0.95); font-size: 1.2rem; margin-bottom: 2.5rem; max-width: 700px; margin-left: auto; margin-right: auto;">
+                Book your stay today and discover why our guests keep coming back. Special discounts available!
+            </p>
+            <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+                <a href="{{ url_for('booking.rooms') }}" class="btn btn-lg" 
+                   style="background: white; color: #6366f1; font-weight: 700; padding: 1.25rem 3rem; font-size: 1.15rem;">
+                    <i class="fa-solid fa-calendar-check"></i> Book Now
+                </a>
+                <a href="{{ url_for('main.contact') }}" class="btn btn-lg" 
+                   style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: white; border: 2px solid rgba(255,255,255,0.4); padding: 1.25rem 3rem; font-size: 1.15rem;">
+                    <i class="fa-solid fa-phone"></i> Contact Us
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Preview -->
+<section class="container" style="padding: 4rem 1.5rem;">
+    <div class="text-center" style="margin-bottom: 3rem;">
+        <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">What Our Guests Say</h2>
+        <p style="font-size: 1.15rem; color: #475569;">Real experiences from real people</p>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+        <div style="background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-left: 4px solid #6366f1;">
+            <div style="color: #f59e0b; font-size: 1.5rem; margin-bottom: 1rem;">★★★★★</div>
+            <p style="font-style: italic; color: #475569; margin-bottom: 1.5rem;">"Absolutely Bombaat experience! The rooms were spotless, staff was incredibly helpful, and the food was outstanding. Will definitely return!"</p>
+            <div style="font-weight: 600; color: #1e293b;">- Rajesh Kumar</div>
+        </div>
+        
+        <div style="background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-left: 4px solid #8b5cf6;">
+            <div style="color: #f59e0b; font-size: 1.5rem; margin-bottom: 1rem;">★★★★★</div>
+            <p style="font-style: italic; color: #475569; margin-bottom: 1.5rem;">"Best hotel in Indiranagar! Perfect location, amazing amenities, and the rooftop pool is just beautiful. Highly recommended for families."</p>
+            <div style="font-weight: 600; color: #1e293b;">- Priya Sharma</div>
+        </div>
+        
+        <div style="background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-left: 4px solid #f59e0b;">
+            <div style="color: #f59e0b; font-size: 1.5rem; margin-bottom: 1rem;">★★★★★</div>
+            <p style="font-style: italic; color: #475569; margin-bottom: 1.5rem;">"ತುಂಬಾ ಚೆನ್ನಾಗಿದೆ! (Very good!) The true Namma Bengaluru hospitality. Felt like home away from home. Thank you Hotel Bombaat!"</p>
+            <div style="font-weight: 600; color: #1e293b;">- Anand Rao</div>
+        </div>
+    </div>
+    
+    <div style="text-align: center; margin-top: 2.5rem;">
+        <a href="{{ url_for('main.reviews') }}" class="btn btn-secondary">
+            <i class="fa-solid fa-star"></i> Read All Reviews
+        </a>
+    </div>
+</section>
+
+{% endblock %}

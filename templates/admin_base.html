@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Hotel Bombaat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        /* Admin-specific styles */
+        body { background: #f0f2f5; }
+        .admin-layout { display: flex; }
+        .admin-sidebar {
+            width: 250px;
+            background: var(--dark-color);
+            color: var(--white-color);
+            min-height: 100vh;
+            padding: 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        .admin-sidebar h2 { color: var(--white-color); border-bottom: 1px solid #555; padding-bottom: 1rem; }
+        .admin-sidebar h2 i { color: var(--primary-color); }
+        .admin-nav { list-style: none; padding: 0; margin: 0; }
+        .admin-nav li a {
+            display: block;
+            color: #eee;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            transition: background 0.3s ease;
+        }
+        .admin-nav li a:hover { background: #555; }
+        .admin-nav li a.active { background: var(--primary-color); }
+        .admin-main {
+            margin-left: 250px; /* Same as sidebar width */
+            padding: 2rem;
+            width: calc(100% - 250px);
+        }
+        .admin-header {
+            background: var(--white-color);
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        /* Make tables look good in admin */
+        .table-container { margin-top: 1.5rem; }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <nav class="admin-sidebar">
+            <h2><i class="fa-solid fa-user-shield"></i> Admin</h2>
+            <ul class="admin-nav">
+                <li><a href="{{ url_for('admin.dashboard') }}" class="{{ 'active' if 'dashboard' in request.path else '' }}"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="{{ url_for('admin.manage_users') }}" class="{{ 'active' if 'users' in request.path else '' }}"><i class="fa-solid fa-users"></i> Manage Users</a></li>
+                <li><a href="{{ url_for('admin.manage_bookings') }}" class="{{ 'active' if 'bookings' in request.path else '' }}"><i class="fa-solid fa-briefcase"></i> Manage Bookings</a></li>
+                <li><hr style="border-color: #555;"></li>
+                <li><a href="{{ url_for('main.index') }}"><i class="fa-solid fa-globe"></i> View Main Site</a></li>
+                <li><a href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+            </ul>
+        </nav>
+
+        <main class="admin-main">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages" style="padding-top: 0;">
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+{% extends "admin_base.html" %}
+{% block content %}
+<div class="admin-header">
+    <h1>Admin Dashboard</h1>
+    <p>Welcome, {{ session.username }}!</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <i class="fa-solid fa-users"></i>
+        <h3>Total Users</h3>
+        <p>{{ stats.total_users }}</p>
+    </div>
+    <div class="stat-card">
+        <i class="fa-solid fa-briefcase"></i>
+        <h3>Total Bookings</h3>
+        <p>{{ stats.total_bookings }}</p>
+    </div>
+    <div class="stat-card">
+        <i class="fa-solid fa-utensils"></i>
+        <h3>Food Orders</h3>
+        <p>{{ stats.total_orders }}</p>
+    </div>
+    <div class="stat-card">
+        <i class="fa-solid fa-wallet"></i>
+        <h3>Total Revenue</h3>
+        <p>₹{{ stats.total_revenue|int }}</p>
+    </div>
+</div>
+
+<div class="table-container" style="margin-top: 2rem;">
+    <h2>Recent Bookings</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Room Type</th>
+                <th>Check-in</th>
+                <th>Cost (₹)</th>
+                <th>Payment</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in recent_bookings %}
+            <tr>
+                <td>{{ booking.user_email }}</td>
+                <td>{{ booking.room_type }}</td>
+                <td>{{ booking.check_in }}</td>
+                <td>{{ "%.2f"|format(booking.total_cost) }}</td>
+                <td><span class="status-{{ booking.payment_status }}">{{ booking.payment_status|capitalize }}</span></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
